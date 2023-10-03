@@ -14,5 +14,5 @@ path = "src/main.rs"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-tokio = { version = "1.29.1", features = ["macros", "rt-multi-thread"] }
-axum = "0.6.19"
+tokio = { version = "1.32.0", features = ["macros", "rt-multi-thread"] }
+axum = "0.6.20"
