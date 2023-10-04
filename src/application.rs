@@ -1,6 +1,8 @@
 use std::{error::Error, net::TcpListener};
 
 use axum::{routing::get, Router, Server};
+use tower_http::trace::TraceLayer;
+use tracing::info;
 
 use crate::routes::health_check;
 
@@ -16,7 +18,11 @@ impl Application {
         let address = format!("{}:{}", "0.0.0.0", port);
         let listener = TcpListener::bind(address)?;
 
-        let app = Router::new().route("/health", get(health_check));
+        let trace_layer = TraceLayer::new_for_http();
+
+        let app = Router::new()
+            .route("/health", get(health_check))
+            .layer(trace_layer);
 
         Ok(Self {
             port: listener.local_addr()?.port(),
@@ -34,12 +40,12 @@ impl Application {
     }
 
     pub async fn run(&self) -> Result<(), Box<dyn Error>> {
-        println!("Listening on http://0.0.0.0:{}", self.port()); // FIXME: use proper logging
+        info!("Listening on http://0.0.0.0:{}", self.port());
 
         Server::from_tcp(self.listener.try_clone()?)?
             .serve(self.app.clone().into_make_service())
             .await
-            .unwrap();
+            .expect("Falied to run server");
 
         Ok(())
     }
