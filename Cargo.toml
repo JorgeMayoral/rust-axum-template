@@ -16,3 +16,6 @@ path = "src/main.rs"
 [dependencies]
 tokio = { version = "1.32.0", features = ["macros", "rt-multi-thread"] }
 axum = "0.6.20"
+
+[dev-dependencies]
+tower = { version = "0.4.13", features = ["util"] }

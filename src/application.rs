@@ -29,6 +29,10 @@ impl Application {
         self.port
     }
 
+    pub fn app(self) -> Router {
+        self.app
+    }
+
     pub async fn run(&self) -> Result<(), Box<dyn Error>> {
         println!("Listening on http://0.0.0.0:{}", self.port()); // FIXME: use proper logging
 
@@ -38,5 +42,15 @@ impl Application {
             .unwrap();
 
         Ok(())
+    }
+}
+
+#[cfg(test)]
+mod test {
+    #[tokio::test]
+    async fn test_build() {
+        std::env::set_var("PORT", "8080");
+        let app = super::Application::build().await.unwrap();
+        assert_eq!(app.port(), 8080);
     }
 }
