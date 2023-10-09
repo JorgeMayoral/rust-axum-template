@@ -1,3 +1,3 @@
 pub mod application;
-pub mod routes;
+pub mod health;
 pub mod telemetry;

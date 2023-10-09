@@ -4,7 +4,7 @@ use axum::{routing::get, Router, Server};
 use tower_http::trace::TraceLayer;
 use tracing::info;
 
-use crate::routes::health_check;
+use crate::health::routes::health_check;
 
 pub struct Application {
     port: u16,
