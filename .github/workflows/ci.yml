@@ -1,0 +1,30 @@
+name: Continuous Integration
+
+on:
+  # Trigger the workflow on push or pull request,
+  # but only for the master branch
+  push:
+    paths:
+      - '**.rs'
+      - '**.toml'
+      - '**.yml'
+  pull_request:
+    paths:
+      - '**.rs'
+      - '**.toml'
+      - '**.yml'
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build
+      run: cargo build --verbose
+    - name: Run tests
+      run: cargo test --verbose
