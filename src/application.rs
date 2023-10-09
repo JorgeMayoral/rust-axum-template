@@ -4,7 +4,8 @@ use axum::{routing::get, Router, Server};
 use tower_http::trace::TraceLayer;
 use tracing::info;
 
-use crate::health::routes::health_check;
+use crate::health::controllers::health_check;
+use crate::todos::router::todos_router;
 
 pub struct Application {
     port: u16,
@@ -22,6 +23,7 @@ impl Application {
 
         let app = Router::new()
             .route("/health", get(health_check))
+            .nest("/todos", todos_router())
             .layer(trace_layer);
 
         Ok(Self {
