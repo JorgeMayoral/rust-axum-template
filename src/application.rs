@@ -15,7 +15,7 @@ pub struct Application {
 
 impl Application {
     pub async fn build() -> Result<Self, std::io::Error> {
-        let port = std::env::var("PORT").unwrap_or_else(|_| "0".to_string());
+        let port = std::env::var("PORT").unwrap_or_else(|_| "8080".to_string());
         let address = format!("{}:{}", "0.0.0.0", port);
         let listener = TcpListener::bind(address)?;
 
