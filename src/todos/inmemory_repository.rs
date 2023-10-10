@@ -19,4 +19,16 @@ impl Repository {
     pub fn all(&self) -> Vec<Todo> {
         self.todos.values().cloned().collect::<Vec<Todo>>()
     }
+
+    pub fn get(&self, id: u32) -> Option<Todo> {
+        self.todos.get(&id).cloned()
+    }
+
+    pub fn update(&mut self, todo: Todo) {
+        self.todos.insert(todo.id(), todo);
+    }
+
+    pub fn delete(&mut self, id: u32) {
+        self.todos.remove(&id);
+    }
 }

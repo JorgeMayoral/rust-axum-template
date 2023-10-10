@@ -1,12 +1,12 @@
 use std::sync::{Arc, RwLock};
 
 use axum::{
-    routing::{get, post},
+    routing::{delete, get, post, put},
     Router,
 };
 
 use super::{
-    controller::{add_todo, get_all_todos},
+    controller::{add_todo, delete_todo, get_all_todos, get_todo, update_todo},
     inmemory_repository::Repository,
 };
 
@@ -24,5 +24,8 @@ pub fn todos_router() -> Router {
     Router::new()
         .route("/", get(get_all_todos))
         .route("/", post(add_todo))
+        .route("/:id", get(get_todo))
+        .route("/:id", put(update_todo))
+        .route("/:id", delete(delete_todo))
         .with_state(state)
 }
