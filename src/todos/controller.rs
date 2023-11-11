@@ -5,16 +5,16 @@ use axum::{
     http::StatusCode,
 };
 
-use super::{model::Todo, router::TodosState};
+use super::{model::Todo, repository::TodoRepository};
 
-#[tracing::instrument(skip(payload, state))]
+#[tracing::instrument(skip(payload, repo))]
 pub async fn add_todo(
-    State(state): State<Arc<RwLock<TodosState>>>,
+    State(repo): State<Arc<RwLock<TodoRepository>>>,
     Json(payload): Json<Todo>,
 ) -> StatusCode {
-    match state.write() {
-        Ok(mut state) => {
-            state.repository.add(payload);
+    match repo.write() {
+        Ok(mut repo) => {
+            repo.add(payload);
             StatusCode::CREATED
         }
         Err(e) => {
@@ -24,13 +24,13 @@ pub async fn add_todo(
     }
 }
 
-#[tracing::instrument(skip(state))]
+#[tracing::instrument(skip(repo))]
 pub async fn get_all_todos(
-    State(state): State<Arc<RwLock<TodosState>>>,
+    State(repo): State<Arc<RwLock<TodoRepository>>>,
 ) -> Result<(StatusCode, Json<Vec<Todo>>), StatusCode> {
-    match state.read() {
-        Ok(state) => {
-            let todos = state.repository.all();
+    match repo.read() {
+        Ok(repo) => {
+            let todos = repo.all();
             Ok((StatusCode::OK, Json(todos)))
         }
         Err(e) => {
@@ -40,13 +40,13 @@ pub async fn get_all_todos(
     }
 }
 
-#[tracing::instrument(skip(state))]
+#[tracing::instrument(skip(repo))]
 pub async fn get_todo(
     Path(id): Path<u32>,
-    State(state): State<Arc<RwLock<TodosState>>>,
+    State(repo): State<Arc<RwLock<TodoRepository>>>,
 ) -> Result<(StatusCode, Json<Todo>), StatusCode> {
-    match state.read() {
-        Ok(state) => match state.repository.get(id) {
+    match repo.read() {
+        Ok(repo) => match repo.get(id) {
             Some(todo) => Ok((StatusCode::OK, Json(todo))),
             None => Err(StatusCode::NOT_FOUND),
         },
@@ -57,15 +57,15 @@ pub async fn get_todo(
     }
 }
 
-#[tracing::instrument(skip(payload, state))]
+#[tracing::instrument(skip(payload, repo))]
 pub async fn update_todo(
     Path(id): Path<u32>,
-    State(state): State<Arc<RwLock<TodosState>>>,
+    State(repo): State<Arc<RwLock<TodoRepository>>>,
     Json(payload): Json<Todo>,
 ) -> StatusCode {
-    match state.write() {
-        Ok(mut state) => {
-            state.repository.update(payload);
+    match repo.write() {
+        Ok(mut repo) => {
+            repo.update(payload);
             StatusCode::OK
         }
         Err(e) => {
@@ -75,14 +75,14 @@ pub async fn update_todo(
     }
 }
 
-#[tracing::instrument(skip(state))]
+#[tracing::instrument(skip(repo))]
 pub async fn delete_todo(
     Path(id): Path<u32>,
-    State(state): State<Arc<RwLock<TodosState>>>,
+    State(repo): State<Arc<RwLock<TodoRepository>>>,
 ) -> StatusCode {
-    match state.write() {
-        Ok(mut state) => {
-            state.repository.delete(id);
+    match repo.write() {
+        Ok(mut repo) => {
+            repo.delete(id);
             StatusCode::NO_CONTENT
         }
         Err(e) => {

@@ -3,12 +3,13 @@ use axum::{
     http::{Method, Request, StatusCode},
 };
 use hyper::header;
-use rust_axum_template::application::Application;
 use tower::{Service, ServiceExt};
+
+use crate::helpers::get_default_app;
 
 #[tokio::test]
 async fn get_todo_404_test() {
-    let app = Application::build().await.unwrap().app();
+    let app = get_default_app().await.app();
 
     let response = app
         .oneshot(
@@ -26,7 +27,7 @@ async fn get_todo_404_test() {
 
 #[tokio::test]
 async fn get_todo_test() {
-    let app = Application::build().await.unwrap();
+    let app = get_default_app().await;
     dbg!(&app.port());
     let mut app = app.app();
     let json_body = serde_json::to_string(&serde_json::json!({

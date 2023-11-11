@@ -1,34 +1,36 @@
 use std::collections::HashMap;
 
-use super::model::Todo;
+use super::{model::Todo, repository::Repository};
 
 #[derive(Default)]
-pub struct Repository {
+pub struct InMemoryRepository {
     todos: HashMap<u32, Todo>,
 }
 
-impl Repository {
+impl InMemoryRepository {
     pub fn new(hashmap: HashMap<u32, Todo>) -> Self {
         Self { todos: hashmap }
     }
+}
 
-    pub fn add(&mut self, todo: Todo) {
+impl Repository for InMemoryRepository {
+    fn add(&mut self, todo: Todo) {
         self.todos.insert(todo.id(), todo);
     }
 
-    pub fn all(&self) -> Vec<Todo> {
+    fn all(&self) -> Vec<Todo> {
         self.todos.values().cloned().collect::<Vec<Todo>>()
     }
 
-    pub fn get(&self, id: u32) -> Option<Todo> {
+    fn get(&self, id: u32) -> Option<Todo> {
         self.todos.get(&id).cloned()
     }
 
-    pub fn update(&mut self, todo: Todo) {
+    fn update(&mut self, todo: Todo) {
         self.todos.insert(todo.id(), todo);
     }
 
-    pub fn delete(&mut self, id: u32) {
+    fn delete(&mut self, id: u32) {
         self.todos.remove(&id);
     }
 }

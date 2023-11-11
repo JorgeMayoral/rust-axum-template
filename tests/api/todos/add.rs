@@ -2,12 +2,13 @@ use axum::{
     body::Body,
     http::{header, Method, Request, StatusCode},
 };
-use rust_axum_template::application::Application;
 use tower::ServiceExt;
+
+use crate::helpers::get_default_app;
 
 #[tokio::test]
 async fn add_todo_test() {
-    let app = Application::build().await.unwrap().app();
+    let app = get_default_app().await.app();
     let json_body = serde_json::to_string(&serde_json::json!({
         "id": 1,
         "title": "test",

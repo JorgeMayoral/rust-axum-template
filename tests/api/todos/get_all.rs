@@ -2,12 +2,13 @@ use axum::{
     body::Body,
     http::{Method, Request, StatusCode},
 };
-use rust_axum_template::application::Application;
 use tower::ServiceExt;
+
+use crate::helpers::get_default_app;
 
 #[tokio::test]
 async fn get_all_todos_test() {
-    let app = Application::build().await.unwrap().app();
+    let app = get_default_app().await.app();
 
     let response = app
         .oneshot(

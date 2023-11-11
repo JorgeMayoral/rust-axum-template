@@ -5,6 +5,7 @@ use tower_http::trace::TraceLayer;
 use tracing::info;
 
 use crate::health::controllers::health_check;
+use crate::todos::repository::TodoRepository;
 use crate::todos::router::todos_router;
 
 pub struct Application {
@@ -14,7 +15,7 @@ pub struct Application {
 }
 
 impl Application {
-    pub async fn build() -> Result<Self, std::io::Error> {
+    pub async fn build(todo_repository: TodoRepository) -> Result<Self, std::io::Error> {
         let port = std::env::var("PORT").unwrap_or_else(|_| "0".to_string());
         let address = format!("{}:{}", "0.0.0.0", port);
         let listener = TcpListener::bind(address)?;
@@ -23,7 +24,7 @@ impl Application {
 
         let app = Router::new()
             .route("/health", get(health_check))
-            .nest("/todos", todos_router())
+            .nest("/todos", todos_router(todo_repository))
             .layer(trace_layer);
 
         Ok(Self {
@@ -55,10 +56,13 @@ impl Application {
 
 #[cfg(test)]
 mod test {
+    use crate::todos::inmemory_repository::InMemoryRepository;
+
     #[tokio::test]
     async fn test_build() {
         std::env::set_var("PORT", "8080");
-        let app = super::Application::build().await.unwrap();
+        let todo_repository = Box::<InMemoryRepository>::default();
+        let app = super::Application::build(todo_repository).await.unwrap();
         assert_eq!(app.port(), 8080);
     }
 }

@@ -7,19 +7,11 @@ use axum::{
 
 use super::{
     controller::{add_todo, delete_todo, get_all_todos, get_todo, update_todo},
-    inmemory_repository::Repository,
+    repository::TodoRepository,
 };
 
-#[derive()]
-pub struct TodosState {
-    pub repository: Repository,
-}
-
-pub fn todos_router() -> Router {
-    let state = TodosState {
-        repository: Repository::default(),
-    };
-    let state = RwLock::new(state);
+pub fn todos_router(todo_repository: TodoRepository) -> Router {
+    let state = RwLock::new(todo_repository);
     let state = Arc::new(state);
     Router::new()
         .route("/", get(get_all_todos))
