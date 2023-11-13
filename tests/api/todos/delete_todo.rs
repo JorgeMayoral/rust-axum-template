@@ -10,28 +10,8 @@ use rust_axum_template::{
 };
 use tower::ServiceExt;
 
-use crate::helpers::get_default_app;
-
 #[tokio::test]
-async fn get_todo_404_test() {
-    let app = get_default_app().await.app();
-
-    let response = app
-        .oneshot(
-            Request::builder()
-                .uri("/todos/1")
-                .method(Method::GET)
-                .body(Body::empty())
-                .unwrap(),
-        )
-        .await
-        .unwrap();
-
-    assert_eq!(response.status(), StatusCode::NOT_FOUND);
-}
-
-#[tokio::test]
-async fn get_todo_test() {
+async fn update_todo_test() {
     let mut map: HashMap<u32, Todo> = HashMap::new();
     let new_todo = Todo::new(1, "test".into(), false);
     map.insert(1, new_todo.clone());
@@ -43,15 +23,11 @@ async fn get_todo_test() {
         .oneshot(
             Request::builder()
                 .uri("/todos/1")
-                .method(Method::GET)
+                .method(Method::DELETE)
                 .body(Body::empty())
                 .unwrap(),
         )
         .await
         .unwrap();
-    assert_eq!(response.status(), StatusCode::OK);
-
-    let body = hyper::body::to_bytes(response.into_body()).await.unwrap();
-    let todo: Todo = serde_json::from_slice(&body).unwrap();
-    assert_eq!(todo, new_todo);
+    assert_eq!(response.status(), StatusCode::NO_CONTENT);
 }

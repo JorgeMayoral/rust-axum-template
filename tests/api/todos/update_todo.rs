@@ -4,47 +4,35 @@ use axum::{
     body::Body,
     http::{Method, Request, StatusCode},
 };
+use hyper::header;
 use rust_axum_template::{
     application::Application,
     todos::{inmemory_repository::InMemoryRepository, model::Todo},
 };
 use tower::ServiceExt;
 
-use crate::helpers::get_default_app;
-
 #[tokio::test]
-async fn get_todo_404_test() {
-    let app = get_default_app().await.app();
-
-    let response = app
-        .oneshot(
-            Request::builder()
-                .uri("/todos/1")
-                .method(Method::GET)
-                .body(Body::empty())
-                .unwrap(),
-        )
-        .await
-        .unwrap();
-
-    assert_eq!(response.status(), StatusCode::NOT_FOUND);
-}
-
-#[tokio::test]
-async fn get_todo_test() {
+async fn update_todo_test() {
     let mut map: HashMap<u32, Todo> = HashMap::new();
     let new_todo = Todo::new(1, "test".into(), false);
     map.insert(1, new_todo.clone());
     let todo_repo = Box::new(InMemoryRepository::new(map));
     let app = Application::build(todo_repo).await.unwrap();
     let app = app.app();
+    let json_body = serde_json::to_string(&serde_json::json!({
+        "id": 1,
+        "title": "test-modified",
+        "completed": true
+    }))
+    .unwrap();
 
     let response = app
         .oneshot(
             Request::builder()
                 .uri("/todos/1")
-                .method(Method::GET)
-                .body(Body::empty())
+                .method(Method::PUT)
+                .header(header::CONTENT_TYPE, mime::APPLICATION_JSON.as_ref())
+                .body(Body::from(json_body))
                 .unwrap(),
         )
         .await
@@ -52,6 +40,7 @@ async fn get_todo_test() {
     assert_eq!(response.status(), StatusCode::OK);
 
     let body = hyper::body::to_bytes(response.into_body()).await.unwrap();
-    let todo: Todo = serde_json::from_slice(&body).unwrap();
-    assert_eq!(todo, new_todo);
+    let updated_todo: Todo = serde_json::from_slice(&body).unwrap();
+    let expected_todo = Todo::new(1, "test-modified".into(), true);
+    assert_eq!(updated_todo, expected_todo);
 }

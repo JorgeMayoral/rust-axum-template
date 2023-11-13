@@ -62,15 +62,15 @@ pub async fn update_todo(
     Path(id): Path<u32>,
     State(repo): State<Arc<RwLock<TodoRepository>>>,
     Json(payload): Json<Todo>,
-) -> StatusCode {
+) -> Result<(StatusCode, Json<Todo>), StatusCode> {
     match repo.write() {
         Ok(mut repo) => {
-            repo.update(payload);
-            StatusCode::OK
+            repo.update(payload.clone());
+            Ok((StatusCode::OK, Json(payload)))
         }
         Err(e) => {
             tracing::error!("Failed to get mutable reference to repository: {}", e);
-            StatusCode::INTERNAL_SERVER_ERROR
+            Err(StatusCode::INTERNAL_SERVER_ERROR)
         }
     }
 }
