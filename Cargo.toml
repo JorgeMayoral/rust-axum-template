@@ -22,7 +22,7 @@ tracing-log = "0.2.0"
 tower-http = { version = "0.4.4", features = ["trace"] }
 tracing-bunyan-formatter = "0.3.9"
 serde = { version = "1.0.192", features = ["derive"] }
-axum-macros = "0.3.8"
+axum-macros = "0.4.0"
 
 [dev-dependencies]
 hyper = { version = "0.14.27", features = ["full"] }
