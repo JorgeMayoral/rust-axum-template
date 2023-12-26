@@ -21,7 +21,7 @@ tracing-subscriber = { version = "0.3.18", features = ["registry", "env-filter"]
 tracing-log = "0.2.0"
 tower-http = { version = "0.5.0", features = ["trace"] }
 tracing-bunyan-formatter = "0.3.9"
-serde = { version = "1.0.192", features = ["derive"] }
+serde = { version = "1.0.193", features = ["derive"] }
 axum-macros = "0.4.0"
 
 [dev-dependencies]
