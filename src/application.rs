@@ -1,6 +1,6 @@
 use std::{error::Error, net::TcpListener};
 
-use axum::{routing::get, Router, Server};
+use axum::{routing::get, Router};
 use tower_http::trace::TraceLayer;
 use tracing::info;
 
@@ -45,10 +45,8 @@ impl Application {
     pub async fn run(&self) -> Result<(), Box<dyn Error>> {
         info!("Listening on http://0.0.0.0:{}", self.port());
 
-        Server::from_tcp(self.listener.try_clone()?)?
-            .serve(self.app.clone().into_make_service())
-            .await
-            .expect("Falied to run server");
+        let listener: tokio::net::TcpListener = self.listener.try_clone()?.try_into()?;
+        axum::serve(listener, self.app.clone().into_make_service());
 
         Ok(())
     }

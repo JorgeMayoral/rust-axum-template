@@ -4,6 +4,7 @@ use axum::{
     body::Body,
     http::{Method, Request, StatusCode},
 };
+use http_body_util::BodyExt;
 use hyper::header;
 use rust_axum_template::{
     application::Application,
@@ -39,7 +40,7 @@ async fn update_todo_test() {
         .unwrap();
     assert_eq!(response.status(), StatusCode::OK);
 
-    let body = hyper::body::to_bytes(response.into_body()).await.unwrap();
+    let body = response.into_body().collect().await.unwrap().to_bytes();
     let updated_todo: Todo = serde_json::from_slice(&body).unwrap();
     let expected_todo = Todo::new(1, "test-modified".into(), true);
     assert_eq!(updated_todo, expected_todo);

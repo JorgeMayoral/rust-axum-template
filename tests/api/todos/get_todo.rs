@@ -4,6 +4,7 @@ use axum::{
     body::Body,
     http::{Method, Request, StatusCode},
 };
+use http_body_util::BodyExt;
 use rust_axum_template::{
     application::Application,
     todos::{inmemory_repository::InMemoryRepository, model::Todo},
@@ -51,7 +52,7 @@ async fn get_todo_test() {
         .unwrap();
     assert_eq!(response.status(), StatusCode::OK);
 
-    let body = hyper::body::to_bytes(response.into_body()).await.unwrap();
+    let body = response.into_body().collect().await.unwrap().to_bytes();
     let todo: Todo = serde_json::from_slice(&body).unwrap();
     assert_eq!(todo, new_todo);
 }

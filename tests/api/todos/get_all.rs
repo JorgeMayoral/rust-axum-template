@@ -2,6 +2,7 @@ use axum::{
     body::Body,
     http::{Method, Request, StatusCode},
 };
+use http_body_util::BodyExt;
 use tower::ServiceExt;
 
 use crate::helpers::get_default_app;
@@ -23,7 +24,7 @@ async fn get_all_todos_test() {
 
     assert_eq!(response.status(), StatusCode::OK);
 
-    let body = hyper::body::to_bytes(response.into_body()).await.unwrap();
+    let body = response.into_body().collect().await.unwrap().to_bytes();
     let todos: Vec<serde_json::Value> = serde_json::from_slice(&body).unwrap();
     assert_eq!(todos.len(), 0);
 }
