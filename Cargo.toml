@@ -15,7 +15,7 @@ path = "src/main.rs"
 
 [dependencies]
 tokio = { version = "1.36.0", features = ["macros", "rt-multi-thread"] }
-axum = "0.7.4"
+axum = "0.7.5"
 tracing = { version = "0.1.40", features = ["log"] }
 tracing-subscriber = { version = "0.3.18", features = ["registry", "env-filter"] }
 tracing-log = "0.2.0"
