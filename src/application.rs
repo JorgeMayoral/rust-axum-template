@@ -7,6 +7,7 @@ use tracing::info;
 use crate::health::controllers::health_check;
 use crate::todos::repository::TodoRepository;
 use crate::todos::router::todos_router;
+use crate::views::views_router;
 
 pub struct Application {
     port: u16,
@@ -25,6 +26,7 @@ impl Application {
         let app = Router::new()
             .route("/health", get(health_check))
             .nest("/todos", todos_router(todo_repository))
+            .merge(views_router())
             .layer(trace_layer);
 
         Ok(Self {

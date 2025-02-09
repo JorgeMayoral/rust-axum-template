@@ -15,7 +15,7 @@ path = "src/main.rs"
 
 [dependencies]
 tokio = { version = "1.43.0", features = ["macros", "rt-multi-thread"] }
-axum = "0.8.1"
+axum = { version = "0.8.1", features = ["macros"] }
 tracing = { version = "0.1.41", features = ["log"] }
 tracing-subscriber = { version = "0.3.19", features = [
     "registry",
@@ -27,6 +27,8 @@ tracing-bunyan-formatter = "0.3.10"
 serde = { version = "1.0.217", features = ["derive"] }
 axum-macros = "0.5.0"
 http-body-util = "0.1.2"
+tera = "1.20.0"
+axum-template = { version = "3.0.0", features = ["tera"] }
 
 [dev-dependencies]
 hyper = { version = "1.6.0", features = ["full"] }
