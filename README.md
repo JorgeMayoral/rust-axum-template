@@ -1,5 +1,11 @@
 # API template using Rust and Axum
 
+> [!WARNING]
+> This project is a hobby project, not intended for production use.
+
+> [!WARNING]
+> This project is in the process of a complete rebuild, the functionality may change completely in the future.
+
 This is a template for a REST API using [Rust](https://www.rust-lang.org/) and [Axum](https://github.com/tokio-rs/axum).
 
 ## Requirements
