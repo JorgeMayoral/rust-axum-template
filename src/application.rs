@@ -46,7 +46,7 @@ impl Application {
         info!("Listening on http://0.0.0.0:{}", self.port());
 
         let listener: tokio::net::TcpListener = self.listener.try_clone()?.try_into()?;
-        axum::serve(listener, self.app.clone().into_make_service());
+        let _ = axum::serve(listener, self.app.clone().into_make_service()).await;
 
         Ok(())
     }
