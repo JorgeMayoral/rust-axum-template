@@ -15,7 +15,7 @@ run:
 
 # Runs project in watch mode
 dev:
-  cargo watch -x "run"
+  bacon run
 
 # Runs project tests
 test:
